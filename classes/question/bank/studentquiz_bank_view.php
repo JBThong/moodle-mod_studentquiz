@@ -41,8 +41,9 @@ require_once(__DIR__ . '/state_column.php');
 require_once(__DIR__ . '/anonym_creator_name_column.php');
 require_once(__DIR__ . '/preview_column.php');
 require_once(__DIR__ . '/question_name_column.php');
-require_once(__DIR__ . '/sq_hidden_column.php');
+require_once(__DIR__ . '/sq_hidden_action_column.php');
 require_once(__DIR__ . '/sq_edit_action_column.php');
+require_once(__DIR__ . '/sq_edit_menu_column.php');
 
 /**
  * Module instance settings form
