@@ -209,6 +209,15 @@
     margin-right: 0;
 }
 
+.path-mod-studentquiz table#categoryquestions .dropdown-item {
+    color: #212529;
+}
+.path-mod-studentquiz table#categoryquestions .dropdown-item:hover,
+.path-mod-studentquiz table#categoryquestions .dropdown-item:focus,
+.path-mod-studentquiz table#categoryquestions .dropdown-item:active {
+    color: #ffffff;
+}
+
 .path-mod-studentquiz .studentquiz_behaviour {
     margin: 0 0 10px 5px;
 }
