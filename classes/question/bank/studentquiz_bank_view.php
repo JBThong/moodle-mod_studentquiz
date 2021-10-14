@@ -30,6 +30,7 @@ use mod_studentquiz\local\studentquiz_helper;
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ .'/../../../locallib.php');
+require_once(__DIR__ . '/studentquiz_column_base.php');
 require_once(__DIR__ . '/question_bank_filter.php');
 require_once(__DIR__ . '/question_text_row.php');
 require_once(__DIR__ . '/rate_column.php');
@@ -676,8 +677,8 @@ class studentquiz_bank_view extends \core_question\bank\view {
      */
     protected function get_row_classes($question, $rowcount) {
         $classes = parent::get_row_classes($question, $rowcount);
-        if (isset($question->sq_hidden) && $question->sq_hidden) {
-            $classes[] = 'dimmed_text';
+        if (($key = array_search('dimmed_text', $classes)) !== false) {
+            unset($classes[$key]);
         }
         return $classes;
     }

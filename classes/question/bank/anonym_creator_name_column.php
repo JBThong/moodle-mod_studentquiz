@@ -80,4 +80,24 @@ class anonym_creator_name_column extends \core_question\bank\creator_name_column
                 $this->anonymize, $question, $this->currentuserid, $this->anonymousname, $rowclasses);
         echo $output;
     }
+
+    /**
+     * Output the opening column tag.
+     *
+     * @param \stdClass $question
+     * @param string $rowclasses
+     */
+    protected function display_start($question, $rowclasses) {
+        $tag = 'td';
+        $classes = $this->get_classes();
+        if (!empty($question->sq_hidden)) {
+            $classes .= ' dimmed_text';
+        }
+        $attr = ['class' => $classes];
+        if ($this->isheading) {
+            $tag = 'th';
+            $attr['scope'] = 'row';
+        }
+        echo \html_writer::start_tag($tag, $attr);
+    }
 }
