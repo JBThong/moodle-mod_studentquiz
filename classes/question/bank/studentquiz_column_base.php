@@ -27,23 +27,30 @@ defined('MOODLE_INTERNAL') || die();
  */
 abstract class studentquiz_column_base extends \core_question\bank\column_base {
 
+    /** @var array Extra class names to this column. */
+    protected $extraclasses = [];
+
     /**
-     * Output the opening column tag.
+     * Output the contents of this column.
      *
-     * @param \stdClass $question
-     * @param string $rowclasses
+     * @param object $question The row from the $question table, augmented with extra information.
+     * @param string $rowclasses CSS class names that should be applied to this row of output.
      */
-    public function display_start($question, $rowclasses) {
-        $tag = 'td';
-        $classes = $this->get_classes();
+    public function display($question, $rowclasses) {
+        $this->extraclasses = [];
         if (!empty($question->sq_hidden)) {
-            $classes .= ' dimmed_text';
+            $this->extraclasses[] = 'dimmed_text';
         }
-        $attr = ['class' => $classes];
-        if ($this->isheading) {
-            $tag = 'th';
-            $attr['scope'] = 'row';
-        }
-        echo \html_writer::start_tag($tag, $attr);
+
+        parent::display($question, $rowclasses);
+    }
+
+    /**
+     * Any extra class names to every cell in this column.
+     *
+     * @return array Extra class names.
+     */
+    public function get_extra_classes():array {
+        return $this->extraclasses;
     }
 }

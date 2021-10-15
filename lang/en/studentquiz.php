@@ -510,6 +510,6 @@ $string['studentquizname_help'] = 'The name of this StudentQuiz Activity';
 $string['submissionendbeforestart'] = 'Submissions deadline can not be specified before the open for submissions date';
 $string['tags'] = 'Tags';
 $string['unapprove'] = 'Unapprove';
-$string['unpin'] = 'Unpin this question';
+$string['unpin'] = 'Unpin question';
 $string['visiblegroupnotyetsupport'] = '\'Visible groups\' is not yet supported. Please choose another group mode.';
 $string['notshowratingcomment'] = 'Note: Rating and comment is not available in Preview mode on your own question';
