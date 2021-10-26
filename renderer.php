@@ -1748,14 +1748,14 @@ class mod_studentquiz_state_history_renderer extends mod_studentquiz_renderer {
     public function get_desc_action(int $state): string {
         $states = studentquiz_helper::get_state_names_description();
         if ($state == studentquiz_helper::STATE_NEW) {
-            return get_string('descofstatenew', 'studentquiz');
+            return get_string('descriptionofstatenew', 'studentquiz');
         }
 
         if ($state == studentquiz_helper::STATE_SHOW || $state == studentquiz_helper::STATE_HIDE) {
-            return get_string('descofvisibility', 'studentquiz', ['visibility' => $states[$state]]);
+            return get_string('descriptionofvisibility', 'studentquiz', ['visibility' => $states[$state]]);
         }
 
-        return get_string('descofstate', 'studentquiz', ['state' => $states[$state]]);
+        return get_string('descriptioncofstate', 'studentquiz', ['state' => $states[$state]]);
     }
 }
 

@@ -887,22 +887,14 @@ function xmldb_studentquiz_upgrade($oldversion) {
                       JOIN {question} q ON q.id = sqq.questionid";
             $sqquestions = $DB->get_records_sql($sql);
 
-            $transaction = $DB->start_delegated_transaction();
-            try {
-                foreach ($sqquestions as $sqquestion) {
-                    // Create action new question by onwer.
-                    utils::question_save_action($sqquestion->questionid, $sqquestion->createdby,
-                        studentquiz_helper::STATE_NEW, $sqquestion->timecreated);
+            foreach ($sqquestions as $sqquestion) {
+                // Create action new question by onwer.
+                utils::question_save_action($sqquestion->questionid, $sqquestion->createdby,
+                    studentquiz_helper::STATE_NEW, $sqquestion->timecreated);
 
-                    if (!($sqquestion->state == studentquiz_helper::STATE_NEW)) {
-                        utils::question_save_action($sqquestion->questionid, get_admin()->id,
-                            $sqquestion->state, null);
-                    }
+                if (!($sqquestion->state == studentquiz_helper::STATE_NEW)) {
+                    utils::question_save_action($sqquestion->questionid, get_admin()->id, $sqquestion->state, null);
                 }
-                $DB->commit_delegated_transaction($transaction);
-            } catch (Exception $e) {
-                $transaction->rollback($e);
-                throw new Exception($e->getMessage());
             }
         }
 
