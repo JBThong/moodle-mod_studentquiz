@@ -887,6 +887,7 @@ function xmldb_studentquiz_upgrade($oldversion) {
                       JOIN {question} q ON q.id = sqq.questionid";
             $sqquestions = $DB->get_records_sql($sql);
 
+            $transaction = $DB->start_delegated_transaction();
             foreach ($sqquestions as $sqquestion) {
                 // Create action new question by onwer.
                 utils::question_save_action($sqquestion->questionid, $sqquestion->createdby,
@@ -896,6 +897,7 @@ function xmldb_studentquiz_upgrade($oldversion) {
                     utils::question_save_action($sqquestion->questionid, get_admin()->id, $sqquestion->state, null);
                 }
             }
+            $transaction->allow_commit();
         }
 
         // Studentquiz savepoint reached.
