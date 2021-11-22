@@ -436,7 +436,11 @@ class studentquiz_bank_view extends \core_question\bank\view {
         $baseurl->remove_params('deleteselected', 'approveselected');
 
         // Parse input for question ids.
-        foreach (mod_studentquiz_helper_get_ids_by_raw_submit($rawquestions) as $id) {
+        $questionids = mod_studentquiz_helper_get_ids_by_raw_submit($rawquestions);
+        $states = utils::get_states($questionids);
+        $statedesc = studentquiz_helper::get_state_descriptions();
+        $statenames = '';
+        foreach ($questionids as $id) {
             $baseurl->remove_params('q'.$id);
             $questionlist .= $id.',';
             if (questions_in_use(array($id))) {
@@ -444,6 +448,7 @@ class studentquiz_bank_view extends \core_question\bank\view {
                 $inuse = true;
             }
             $questionnames .= $DB->get_field('question', 'name', array('id' => $id)) . '<br />';
+            $statenames .= $statedesc[$states[$id]->state] . '<br />';
         }
 
         // No questions were selected.
@@ -472,9 +477,8 @@ class studentquiz_bank_view extends \core_question\bank\view {
             $continue = new \single_button($approveurl, get_string('state_toggle', 'studentquiz'), 'get');
             $continue->disabled = true;
             $continue->class .= ' continue_state_change';
-
-            $output = $this->renderer->render_change_state_dialog(get_string('changeselectedsstate', 'studentquiz',
-                $questionnames), $continue, $baseurl);
+            $currentstatequestions = $this->renderer->render_current_state_questions($questionnames, $statenames);
+            $output = $this->renderer->render_change_state_dialog($currentstatequestions, $continue, $baseurl);
         }
 
         echo $output;

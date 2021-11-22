@@ -1408,6 +1408,26 @@ EOT;
     }
 
     /**
+     * Render current state names of questions.
+     *
+     * @param string $questionnames List questions's names.
+     * @param string $statenames List states of questions.
+     * @return string HTML current states.
+     */
+    public function render_current_state_questions(string $questionnames, string $statenames): string {
+        $output = '';
+        $questionnametitle = \html_writer::div(get_string('question'), 'font-weight-bold');
+        $questions = \html_writer::div($questionnametitle . $questionnames, 'flex-grow-1');
+
+        $statenametitle = \html_writer::div(get_string('current_state', 'studentquiz'), 'font-weight-bold');
+        $states = \html_writer::div($statenametitle . $statenames, 'flex-grow-1');
+        $output .= \html_writer::div($questions . $states, 'current-state d-flex');
+        $output .= \html_writer::div(get_string('changestateto', 'studentquiz'), 'mt-3');
+
+        return $output;
+    }
+
+    /**
      * Render state change dialog
      *
      * @param string $message Message to display
@@ -1458,7 +1478,7 @@ EOT;
                 'data-aria-autofocus' => 'true'
         ];
         $output .= $this->box_start('modal-body', 'modal-body', $attributes);
-        $output .= html_writer::tag('p', $message);
+        $output .= html_writer::div($message, 'mb-2');
         $output .= html_writer::select($states, 'statetype');
         $output .= $this->box_end();
         $output .= $this->box_start('modal-footer', 'modal-footer');
@@ -1667,6 +1687,8 @@ class mod_studentquiz_attempt_renderer extends mod_studentquiz_renderer {
     public function render_state_choice($questionid, $courseid, $cmid) {
         $output = '';
         if (has_capability('mod/studentquiz:changestate', $this->page->context)) {
+            $currentstate = utils::get_state_question($questionid);
+            $statenames = studentquiz_helper::get_state_descriptions();
             $states = [
                     studentquiz_helper::STATE_DISAPPROVED => get_string('state_disapproved', 'studentquiz'),
                     studentquiz_helper::STATE_APPROVED => get_string('state_approved', 'studentquiz'),
@@ -1675,7 +1697,8 @@ class mod_studentquiz_attempt_renderer extends mod_studentquiz_renderer {
                     studentquiz_helper::STATE_DELETE => get_string('delete')
             ];
             $output .= html_writer::start_span('change-question-state');
-            $output .= html_writer::tag('label', get_string('state_column_name', 'studentquiz'), ['for' => 'statetype']);
+            $output .= html_writer::div(get_string('changecurrentstate', 'studentquiz',
+                $statenames[$currentstate]), 'current-state mb-2');
             $output .= html_writer::select($states, 'statetype');
             $output .= html_writer::tag('button', get_string('state_toggle', 'studentquiz'),
                     ['type' => 'button', 'class' => 'btn btn-secondary', 'id' => 'change_state', 'data-questionid' => $questionid,
@@ -1798,7 +1821,7 @@ class mod_studentquiz_state_history_renderer extends mod_studentquiz_renderer {
      * @return string Description of state.
      */
     public function get_desc_action(int $state): string {
-        $states = studentquiz_helper::get_state_names_description();
+        $states = studentquiz_helper::get_state_descriptions();
         if ($state == studentquiz_helper::STATE_NEW) {
             return get_string('descriptionofstatenew', 'studentquiz');
         }
