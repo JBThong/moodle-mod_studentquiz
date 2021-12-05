@@ -796,4 +796,16 @@ style5 = html';
 
         return $DB->get_field('studentquiz_question', 'state', ['questionid' => $questionid]);
     }
+
+    /**
+     * List of questionnames of questions.
+     *
+     * @param array $questionids Array of question's id.
+     * @return array List of questionnames.
+     */
+    public static function get_question_names(array $questionids): array {
+        global $DB;
+
+        return $DB->get_records_list('question', 'id', $questionids, '', 'id, name');
+    }
 }

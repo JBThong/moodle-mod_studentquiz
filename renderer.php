@@ -1410,19 +1410,49 @@ EOT;
     /**
      * Render current state names of questions.
      *
-     * @param string $questionnames List questions's names.
-     * @param string $statenames List states of questions.
+     * @param array $questions List of questions.
+     * @param bool $inuse True if at least one question is being used by the quiz.
      * @return string HTML current states.
      */
-    public function render_current_state_questions(string $questionnames, string $statenames): string {
+    public function render_current_state_questions(array $questions, bool $inuse): string {
         $output = '';
-        $questionnametitle = \html_writer::div(get_string('question'), 'font-weight-bold');
-        $questions = \html_writer::div($questionnametitle . $questionnames, 'flex-grow-1');
+        $questionnametitle = \html_writer::div(get_string('question'), 'font-weight-bold col-12 col-md-8');
+        $statenametitle = \html_writer::div(get_string('current_state', 'studentquiz'), 'font-weight-bold col-6 col-md-4');
+        $output .= \html_writer::div($questionnametitle . $statenametitle, 'row');
 
-        $statenametitle = \html_writer::div(get_string('current_state', 'studentquiz'), 'font-weight-bold');
-        $states = \html_writer::div($statenametitle . $statenames, 'flex-grow-1');
-        $output .= \html_writer::div($questions . $states, 'current-state d-flex');
+        foreach ($questions as $question) {
+            $questionname = \html_writer::span($question->name, 'col-12 col-md-8');
+            $questionstate = \html_writer::span($question->state, 'col-6 col-md-4');
+            $output .= \html_writer::div($questionname . $questionstate, 'row');
+        }
+
+        if ($inuse) {
+            $output .= $this->render_explaintion_question_in_use();
+        }
         $output .= \html_writer::div(get_string('changestateto', 'studentquiz'), 'mt-3');
+
+        return $output;
+    }
+
+    /**
+     * Render explaintion about questions in use.
+     *
+     * @return string HTML explaintion about questions in use.
+     */
+    public function render_explaintion_question_in_use(): string {
+        return \html_writer::div(get_string('questionsinuse', 'studentquiz'), 'mt-3');
+    }
+
+    /**
+     * Render Names of questions.
+     * @param array $questions List of questions.
+     * @return string HTML Names of questions.
+     */
+    public function render_question_names(array $questions): string {
+        $output = '';
+        foreach ($questions as $question) {
+            $output .= \html_writer::div($question->name, '');
+        }
 
         return $output;
     }

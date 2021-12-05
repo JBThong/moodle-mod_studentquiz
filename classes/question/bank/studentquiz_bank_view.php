@@ -27,6 +27,7 @@ namespace mod_studentquiz\question\bank;
 
 use mod_studentquiz\local\studentquiz_helper;
 use mod_studentquiz\utils;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -439,16 +440,22 @@ class studentquiz_bank_view extends \core_question\bank\view {
         $questionids = mod_studentquiz_helper_get_ids_by_raw_submit($rawquestions);
         $states = utils::get_states($questionids);
         $statedesc = studentquiz_helper::get_state_descriptions();
-        $statenames = '';
+        $questionnames = utils::get_question_names($questionids);
+        $questions = [];
         foreach ($questionids as $id) {
             $baseurl->remove_params('q'.$id);
             $questionlist .= $id.',';
+            $question = new stdClass();
+            $question->name = '';
+
             if (questions_in_use(array($id))) {
-                $questionnames .= '* ';
+                $question->name = '* ';
                 $inuse = true;
             }
-            $questionnames .= $DB->get_field('question', 'name', array('id' => $id)) . '<br />';
-            $statenames .= $statedesc[$states[$id]->state] . '<br />';
+
+            $question->name .= $questionnames[$id]->name;
+            $question->state = $statedesc[$states[$id]->state];
+            $questions[] = $question;
         }
 
         // No questions were selected.
@@ -457,18 +464,15 @@ class studentquiz_bank_view extends \core_question\bank\view {
         }
         $questionlist = rtrim($questionlist, ',');
 
-        // Add an explanation about questions in use.
-        if ($inuse) {
-            $questionnames .= \html_writer::empty_tag('br').get_string('questionsinuse', 'studentquiz');
-        }
-
         if (optional_param('deleteselected', false, PARAM_BOOL)) {
             $deleteurl = new \moodle_url($baseurl, array('deleteselected' => $questionlist, 'confirm' => md5($questionlist),
                 'sesskey' => sesskey()));
 
             $continue = new \single_button($deleteurl, get_string('delete'), 'get');
+            $questionsdelete = $this->renderer->render_question_names($questions);
+            $questionsdelete .= $inuse ? $this->renderer->render_explaintion_question_in_use() : '';
 
-            $output = $OUTPUT->confirm(get_string('deletequestionscheck', 'question', $questionnames), $continue, $baseurl);
+            $output = $OUTPUT->confirm(get_string('deletequestionscheck', 'question', $questionsdelete), $continue, $baseurl);
         } else if (optional_param('approveselected', false, PARAM_BOOL)) {
             $approveurl = new \moodle_url($baseurl, array('approveselected' => $questionlist, 'state' => 0,
                 'confirm' => md5($questionlist),
@@ -477,7 +481,7 @@ class studentquiz_bank_view extends \core_question\bank\view {
             $continue = new \single_button($approveurl, get_string('state_toggle', 'studentquiz'), 'get');
             $continue->disabled = true;
             $continue->class .= ' continue_state_change';
-            $currentstatequestions = $this->renderer->render_current_state_questions($questionnames, $statenames);
+            $currentstatequestions = $this->renderer->render_current_state_questions($questions, $inuse);
             $output = $this->renderer->render_change_state_dialog($currentstatequestions, $continue, $baseurl);
         }
 
