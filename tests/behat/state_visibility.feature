@@ -261,4 +261,4 @@ Feature: Question states and visibility
     And I switch to "questionpreview" window
     And I set the field "statetype" to "Delete"
     And I click on "Change state" "button"
-    And I should see "\"You cannot delete an approved question\" when deleting own question have state \"Approved\""
+    And I should see "This question cannot be deleted because it has been Approved."

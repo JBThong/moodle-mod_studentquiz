@@ -139,7 +139,7 @@ class studentquiz_helper {
             self::STATE_DELETE => get_string('deleted', 'studentquiz'),
             self::STATE_SHOW => get_string('show'),
             self::STATE_NEW => get_string('new'),
-            self::STATE_REVIEWABLE => get_string('state_reviewable', 'studentquiz')
+            self::STATE_REVIEWABLE => get_string('state_reviewable', 'studentquiz'),
         ];
     }
 }

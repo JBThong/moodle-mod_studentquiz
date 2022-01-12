@@ -82,8 +82,8 @@ class mod_studentquiz_external extends external_api {
 
         // Student can not delete the question when the question is in approved state.
         $context = \context_course::instance($courseid);
-        $isstudent = !is_enrolled($context, $USER->id, 'mod/studentquiz:manage');
-        if ($isstudent && $state == studentquiz_helper::STATE_DELETE) {
+        $canmanage = !has_capability('mod/studentquiz:manage', $context);
+        if ($canmanage && $state == studentquiz_helper::STATE_DELETE) {
             if (utils::get_state_question($questionid) == studentquiz_helper::STATE_APPROVED) {
                 $result = [];
                 $result['status'] = get_string('api_state_change_error_title', 'studentquiz');
@@ -105,7 +105,7 @@ class mod_studentquiz_external extends external_api {
         $cm = get_coursemodule_from_id('studentquiz', $cmid);
         $context = context_module::instance($cmid);
         $PAGE->set_context($context);
-        if ($isstudent) {
+        if ($canmanage) {
             if ($state == studentquiz_helper::STATE_REVIEWABLE) {
                 mod_studentquiz_notify_reviewable_question($questionid, $course, $cm);
             }
