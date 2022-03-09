@@ -102,6 +102,70 @@ class mod_studentquiz_question_bank_filter_form extends moodleform {
         $mform->setType('cmid', PARAM_RAW);
     }
 
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        if ($data['timecreated_sdt'] > 0 && $data['timecreated_edt'] > 0 && $data['timecreated_sdt'] > $data['timecreated_edt']) {
+           $errors['timecreated_sdt'] = get_string('err_filter_timecreated_edt_lesthan', 'studentquiz');
+        }
+
+        if (!is_numeric($data['rate']) && !isset($data['rate'])) {
+             $errors['rate_grp'] = get_string('err_numberic', 'studentquiz');
+         }
+
+        if ($data['rate'] < 0) {
+            $errors['rate_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_rates', 'studentquiz'));
+        }
+
+        if (!is_numeric($data['difficultylevel']) && !isset($data['difficultylevel'])) {
+            $errors['difficultylevel_grp'] = get_string('err_numberic', 'studentquiz');
+        }
+
+        if ($data['difficultylevel'] < 0) {
+            $errors['difficultylevel_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_difficulty_level', 'studentquiz'));
+        }
+
+        if (!is_numeric($data['publiccomment']) && !isset($data['publiccomment'])) {
+            $errors['publiccomment_grp'] = get_string('err_numberic', 'studentquiz');
+        }
+
+        if ($data['publiccomment'] < 0) {
+            $errors['publiccomment_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_difficulty_level', 'studentquiz'));
+        }
+
+        if (!is_numeric($data['myattempts']) && !isset($data['myattempts'])) {
+            $errors['myattempts_grp'] = get_string('err_numberic', 'studentquiz');
+        }
+
+        if ($data['myattempts'] < 0) {
+            $errors['myattempts_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_myattempts', 'studentquiz'));
+        }
+
+        if (!is_numeric($data['mydifficulty']) && !isset($data['mydifficulty'])) {
+            $errors['mydifficulty_grp'] = get_string('err_numberic', 'studentquiz');
+        }
+
+        if ($data['mydifficulty'] < 0) {
+            $errors['mydifficulty_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_mydifficulty', 'studentquiz'));
+        }
+
+        if (!is_numeric($data['myrate']) && !isset($data['myrate'])) {
+            $errors['myrate_grp'] = get_string('err_numberic', 'studentquiz');
+        }
+
+        if ($data['myrate'] < 0) {
+            $errors['myrate_grp'] = get_string('err_negative_number', 'studentquiz',
+            get_string('filter_label_myrate', 'studentquiz'));
+        }
+
+        return $errors;
+    }
+
 }
 
 /**
@@ -163,7 +227,7 @@ class studentquiz_user_filter_date extends user_filter_date {
                     }
                 }
                 if (!empty($dateselector)) {
-                    $isbefore = optional_param('timecreated_sdt', 0, PARAM_INT);
+                    $isbefore = optional_param_array('timecreated_sdt', 0, PARAM_INT);
                     if ($isbefore && $isbefore['enabled']) {
                         // The first active element is "Day" selection.
                         $targetelement = $dateselector[0];

@@ -139,8 +139,11 @@ $string['emaildigestsubject'] = 'StudentQuiz Digest Notification';
 $string['emailsalutation'] = 'Dear {$a},';
 $string['editorplaceholder'] = 'Enter your comment here ...';
 $string['error_form_validation'] = '{$a}';
+$string['err_filter_timecreated_edt_lesthan'] = 'The end date cannot be earlier than the start date';
 $string['error_sendalert'] = 'There was an error sending your report to {$a}.
 Report could not be sent.';
+$string['err_negative_number'] = 'The {$a} can not be a negative number';
+$string['err_numberic'] = 'You must be enter a number';
 $string['expandcomment'] = 'Expand comment';
 $string['expandall'] = 'Expand all comments';
 $string['filter'] = 'Filter';
