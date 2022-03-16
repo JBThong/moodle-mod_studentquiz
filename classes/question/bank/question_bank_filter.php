@@ -445,6 +445,13 @@ class user_filter_number extends studentquiz_user_filter_text {
         return array($res, $params);
     }
 
+    /**
+     * Retrieves data from the form data.
+     *
+     * @param object $formdata data submited with the form.
+     *
+     * @return mixed array filter data or false when filter not set.
+     */
     public function check_data($formdata) {
         $data = parent::check_data($formdata);
 
@@ -456,11 +463,15 @@ class user_filter_number extends studentquiz_user_filter_text {
         return $data;
     }
 
-    public function setupForm(&$mform) {
+    /**
+     * Adds controls specific to this filter in the form.
+     *
+     * @param object $mform A MoodleForm object to setup.
+     */
+    public function setupForm(&$mform) { // @codingStandardsIgnoreLine
         parent::setupForm($mform);
         $rules["$this->_name"] = [
             [null, 'numeric', null, 'client'],
-            [null, 'positiveint', null, 'client'],
         ];
 
         $mform->addGroupRule($this->_name . '_grp', $rules);
@@ -475,8 +486,8 @@ class user_filter_percent extends user_filter_number {
     /**
      * Return sql snippet comparing data is between 0 and 100%
      *
-     * @param mixed $data
-     * @return array
+     * @param array $data Filter settings.
+     * @return array Sql string and $params.
      */
     public function get_sql_filter($data) {
         $val = round($data['value'], 0);
