@@ -76,6 +76,10 @@ if ($pagename) {
     $PAGE->navbar->add($pagename);
 }
 
+if ($errormessage = utils::require_view($context, $cm)) {
+    $output = $PAGE->get_renderer('mod_studentquiz');
+    $output->render_error_message($errormessage, $pagename);
+}
 // Keep referer url.
 $action = (new moodle_url($PAGE->url, ['referer' => $referer]))->out(false);
 

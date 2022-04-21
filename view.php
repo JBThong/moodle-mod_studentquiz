@@ -24,6 +24,7 @@
  * @copyright  2017 HSR (http://www.hsr.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use mod_studentquiz\utils;
 
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/viewlib.php');
@@ -99,7 +100,9 @@ $PAGE->set_url($view->get_pageurl());
 $PAGE->set_title($view->get_title());
 $PAGE->set_heading($COURSE->fullname);
 $PAGE->set_cm($cm, $course);
-
+if ($errormessage = utils::require_view($context, $cm)) {
+    $renderer->render_error_message($errormessage, $view->get_title());
+}
 // Process actions.
 $view->process_actions();
 

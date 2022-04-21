@@ -21,6 +21,7 @@
  * @copyright  2017 HSR (http://www.hsr.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use mod_studentquiz\utils;
 
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/reportlib.php');
@@ -31,10 +32,15 @@ if (!$cmid) {
 }
 
 $report = new mod_studentquiz_report($cmid);
+$cm = $report->get_coursemodule();
 
-require_login($report->get_course(), false, $report->get_coursemodule());
-
+require_login($report->get_course(), false, $cm);
 $context = context_module::instance($cmid);
+$renderer = $PAGE->get_renderer('mod_studentquiz', 'report');
+
+if ($errormessage = utils::require_view($context, $cm)) {
+    $renderer->render_error_message($errormessage, $report->get_statistic_title());
+}
 
 $PAGE->set_title($report->get_statistic_title());
 $PAGE->set_heading($report->get_heading());
@@ -42,8 +48,6 @@ $PAGE->set_context($report->get_context());
 $PAGE->set_url($report->get_stat_url());
 
 echo $OUTPUT->header();
-
-$renderer = $PAGE->get_renderer('mod_studentquiz', 'report');
 
 echo $renderer->view_stat($report);
 

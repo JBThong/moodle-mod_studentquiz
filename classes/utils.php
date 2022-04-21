@@ -46,6 +46,9 @@ class utils {
     const DAILY_DIGEST_TYPE = 1;
     /** @var int Weekly digest type */
     const WEEKLY_DIGEST_TYPE = 2;
+    /** @var int No groups allowed value. */
+    const NO_GROUPS_ALLOWED = -2;
+
 
     /** @var string - Atto Toolbar define. */
     const ATTO_TOOLBAR = 'style1 = bold, italic
@@ -479,7 +482,7 @@ style5 = html';
      * @throws coding_exception if empty or invalid context submitted when $groupid = USERSWITHOUTGROUP
      */
     public static function sq_groups_get_members_join($groupid, $useridcolumn, $context = null) {
-        if (!$groupid) {
+        if (!$groupid || has_capability('moodle/site:accessallgroups', $context)) {
             $joins = '';
             $wheres = '';
             $params = [];
@@ -802,5 +805,44 @@ style5 = html';
         global $DB;
 
         return $DB->get_records_list('question', 'id', $questionids, '', 'id, name');
+    }
+
+    /**
+     * Makes security checks for viewing. Will return an error message if the user cannot access the student quiz.
+     *
+     * @param \context $context The context module.
+     * @param object $cm - The course module object.
+     * @return string The error message.
+     */
+    public static function require_view(\context $context, object $cm): string {
+        $errormessage = '';
+        $currentgroup = self::get_current_group($cm, $context);
+
+        if ($currentgroup == self::NO_GROUPS_ALLOWED) {
+            $errormessage = get_string('error_permission', 'studentquiz');
+        }
+
+        return $errormessage;
+    }
+
+    /**
+     * Get the current group for the user viewing of the studentquiz.
+     *
+     * @param object $cm The course_module object.
+     * @param \context $context The studentquiz context.
+     * @return int The current group id, if applicable. 0 for all users,
+     *      NO_GROUPS_ALLOWED if the user cannot see any group.
+     */
+    public static function get_current_group(object $cm, \context $context) : int {
+        global $COURSE;
+
+        $groupmode = groups_get_activity_groupmode($cm, $COURSE);
+        $currentgroup = groups_get_activity_group($cm, true);
+
+        if ($groupmode == SEPARATEGROUPS && !$currentgroup && !has_capability('moodle/site:accessallgroups', $context)) {
+            $currentgroup = self::NO_GROUPS_ALLOWED;
+        }
+
+        return $currentgroup;
     }
 }

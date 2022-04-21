@@ -21,6 +21,7 @@
  * @copyright  2017 HSR (http://www.hsr.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use mod_studentquiz\utils;
 
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/viewlib.php');
@@ -40,7 +41,6 @@ if ($cmid) {
 } else {
     throw new moodle_exception("invalidcoursemodule");
 }
-
 // Authentication check.
 require_login($module->course, false, $module);
 
@@ -51,7 +51,12 @@ $context = context_module::instance($module->id);
 \mod_studentquiz\access\context_override::ensure_permissions_are_right($context);
 
 $studentquiz = mod_studentquiz_load_studentquiz($module->id, $context->id);
+$output = $PAGE->get_renderer('mod_studentquiz', 'attempt');
 
+if ($errormessage = utils::require_view($context, $module)) {
+    $PAGE->set_pagelayout('popup');
+    $output->render_error_message($errormessage, get_string('studentquiz:preview', 'studentquiz'));
+}
 // Lookup question.
 try {
     $question = question_bank::load_question($questionid);
@@ -129,7 +134,6 @@ if ($question) {
 } else {
     $title = get_string('deletedquestion', 'qtype_missingtype');
 }
-$output = $PAGE->get_renderer('mod_studentquiz', 'attempt');
 $PAGE->set_pagelayout('popup');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
