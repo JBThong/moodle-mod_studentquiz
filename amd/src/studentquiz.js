@@ -23,7 +23,7 @@
 
 /* jshint latedef:nofunc */
 
-define(['jquery'], function($) {
+define(['jquery', 'core/pending'], function($, Pending) {
     return {
         initialise: function(forcerating, forcecommenting, isanswered) {
 
@@ -88,8 +88,18 @@ define(['jquery'], function($) {
 
         // Select all questions.
         selectAllQuestions: function() {
-            $(document).ready(function() {
-                $('#qbheadercheckbox').trigger('click');
+            let headerCheckbox = document.getElementById('qbheadercheckbox');
+            let pendingPromise = new Pending('core/checkbox-toggleall:registerListeners');
+
+            // We need to wait the checkbox-toggleall registers event completely.
+            pendingPromise.resolve().then(()=> {
+                if (!headerCheckbox.checked) {
+                    headerCheckbox.click();
+                }
+
+                return;
+            }).catch(errors => {
+                throw errors;
             });
         }
     };
