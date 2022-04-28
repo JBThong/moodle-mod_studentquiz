@@ -100,7 +100,7 @@ $PAGE->set_url($view->get_pageurl());
 $PAGE->set_title($view->get_title());
 $PAGE->set_heading($COURSE->fullname);
 $PAGE->set_cm($cm, $course);
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $renderer->render_error_message($errormessage, $view->get_title());
 }
 // Process actions.

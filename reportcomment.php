@@ -76,7 +76,7 @@ if ($pagename) {
     $PAGE->navbar->add($pagename);
 }
 
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $output = $PAGE->get_renderer('mod_studentquiz');
     $output->render_error_message($errormessage, $pagename);
 }

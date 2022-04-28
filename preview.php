@@ -53,7 +53,7 @@ $context = context_module::instance($module->id);
 $studentquiz = mod_studentquiz_load_studentquiz($module->id, $context->id);
 $output = $PAGE->get_renderer('mod_studentquiz', 'attempt');
 
-if ($errormessage = utils::require_view($context, $module)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $module)) {
     $PAGE->set_pagelayout('popup');
     $output->render_error_message($errormessage, get_string('studentquiz:preview', 'studentquiz'));
 }

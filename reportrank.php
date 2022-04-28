@@ -38,7 +38,7 @@ require_login($report->get_course(), false, $cm);
 $context = $report->get_context();
 $output = $PAGE->get_renderer('mod_studentquiz', 'ranking');
 
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $output->render_error_message($errormessage, $report->get_ranking_title());
 }
 

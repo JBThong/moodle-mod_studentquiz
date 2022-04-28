@@ -814,7 +814,7 @@ style5 = html';
      * @param object $cm - The course module object.
      * @return string The error message.
      */
-    public static function require_view(\context $context, object $cm): string {
+    public static function check_access_permission_of_group(\context $context, object $cm): string {
         $errormessage = '';
         $currentgroup = self::get_current_group($cm, $context);
 

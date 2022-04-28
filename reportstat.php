@@ -38,7 +38,7 @@ require_login($report->get_course(), false, $cm);
 $context = context_module::instance($cmid);
 $renderer = $PAGE->get_renderer('mod_studentquiz', 'report');
 
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $renderer->render_error_message($errormessage, $report->get_statistic_title());
 }
 

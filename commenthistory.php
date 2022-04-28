@@ -77,7 +77,7 @@ $PAGE->set_pagelayout('popup');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $PAGE->set_url($actionurl);
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $renderer->render_error_message($errormessage, $title);
 }
 echo $OUTPUT->header();

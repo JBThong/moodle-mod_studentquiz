@@ -199,7 +199,7 @@ $navinfo = new stdClass();
 $navinfo->current = $slot;
 $navinfo->total = $questionscount;
 $PAGE->navbar->add(get_string('nav_question_no', 'studentquiz', $navinfo));
-if ($errormessage = utils::require_view($context, $cm)) {
+if ($errormessage = utils::check_access_permission_of_group($context, $cm)) {
     $output->render_error_message($errormessage, $cm->name);
 }
 echo $OUTPUT->header();
